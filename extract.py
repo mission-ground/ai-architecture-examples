@@ -38,3 +38,16 @@ if collection.count() == 0:
 else:
     print(f"이미 {collection.count()}개의 데이터가 벡터 DB에 성공적으로 저장되었있습니다!")
     
+
+query = "이 책에서 말하는 돈을 관리하는 가장 중요한 태도는 뭐야?"
+query_embedding = model.encode(query).tolist()
+
+# DB에서 가장 유사도 높은 3개 문서 검색
+results = collection.query(
+    query_embeddings=query_embedding,
+    n_results=3
+)
+
+print("\n--- [검색 결과] ---")
+for i, doc in enumerate(results['documents'][0]):
+    print(f"{i+1}번째 관련 문장: {doc}")
