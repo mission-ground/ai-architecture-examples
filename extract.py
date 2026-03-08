@@ -9,6 +9,15 @@ def extract_korean_english_text(file_path):
     return text_data
 
 pdf_text = extract_korean_english_text("북브리프_돈의심리학.pdf")
-print(pdf_text)
+# print(type(pdf_text.split("\n")))
+# print(pdf_text)
 
 # 추출된 텍스트가 한국어로추출되지만 글자의 위치가 일부 불안정하게 나타남
+
+# https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 사용해서 임베딩 수행
+from sentence_transformers import SentenceTransformer
+# sentences = ["This is an example sentence", "Each sentence is converted"]
+
+model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
+embeddings = model.encode(pdf_text.split("\n"))
+print(type(embeddings) ,len(embeddings))
