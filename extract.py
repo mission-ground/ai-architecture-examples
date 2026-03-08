@@ -5,7 +5,7 @@ def extract_korean_english_text(file_path):
     with fitz.open(file_path) as doc:
         for page in doc:
             # 기본 추출 방식으로 한글과 영어 모두 유니코드로 정상 추출됨
-            text_data += page.get_text("text") + "\n"
+            text_data += page.get_text("text", sort = True) + "\n"
     return text_data
 
 pdf_text = extract_korean_english_text("북브리프_돈의심리학.pdf")
