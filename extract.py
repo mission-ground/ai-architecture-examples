@@ -16,8 +16,25 @@ pdf_text = extract_korean_english_text("북브리프_돈의심리학.pdf")
 
 # https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 사용해서 임베딩 수행
 from sentence_transformers import SentenceTransformer
-# sentences = ["This is an example sentence", "Each sentence is converted"]
 
+documents = pdf_text.split("\n")
 model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
-embeddings = model.encode(pdf_text.split("\n"))
+embeddings = model.encode(documents)
 print(type(embeddings) ,len(embeddings))
+
+import chromadb
+
+client = chromadb.PersistentClient(path="./my_vector_db")
+collection = client.get_or_create_collection(name="money_psychology_docs")
+ids = [f"doc_{i}" for i in range(len(documents))]
+
+if collection.count() == 0:
+    collection.add(
+        documents=documents,
+        embeddings=embeddings.tolist(), # numpy 배열을 파이썬 리스트로 변환
+        ids=ids
+    )
+    print(f"총 {collection.count()}개의 데이터가 벡터 DB에 성공적으로 저장되었습니다!")
+else:
+    print(f"이미 {collection.count()}개의 데이터가 벡터 DB에 성공적으로 저장되었있습니다!")
+    
